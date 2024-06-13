@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora</title>
+    <style>
+        body {
+            font-family: 'Verdana', sans-serif;
+            background-color: #2c3e50;
+            margin: 0;
+            padding: 0;
+            color: #ecf0f1;
+        }
+        .container {
+            width: 90%;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 25px;
+            background-color: #34495e;
+            border-radius: 15px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #f39c12;
+            margin-bottom: 25px;
+            font-size: 2.5em;
+        }
+        .unit-selector {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .unit-selector label, .unit-calculator label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+        }
+        select, input[type="number"], input[type="text"], button {
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #bdc3c7;
+            border-radius: 8px;
+            width: calc(100% - 24px);
+            box-sizing: border-box;
+            font-size: 1.1em;
+        }
+        button {
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            padding: 12px 24px;
+            width: auto;
+        }
+        button:hover {
+            background-color: #c0392b;
+        }
+        .unit-description {
+            display: none;
+            text-align: center;
+            margin-top: 25px;
+        }
+        .unit-calculator {
+            margin-top: 25px;
+        }
+        .unit-calculator div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        img {
+            max-width: 100%;
+            margin: 15px 0;
+            border-radius: 15px;
+        }
+        .output {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #16a085;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            color: #ecf0f1;
+        }
+        .error {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora</h1>
+        <div class="unit-selector">
+            <label for="units">Seleccione una unidad:</label>
+            <select id="units" onchange="displayFields()">
+                <option value="">--Seleccione--</option>
+                <option value="kirchhoff">Kirchhoff</option>
+                <option value="maxwell">Maxwell</option>
+                <option value="faraday">Faraday</option>
+                <option value="ohm">Ohm</option>              
+            </select>
+        </div>
+        <div id="kirchhoff" class="unit-description">
+            <h2>Kirchhoff</h2>
+        </div>
+        <div id="ohm" class="unit-description">
+            <h2>Ohm</h2>
+        </div>
+        <div id="faraday" class="unit-description">
+            <h2>Faraday</h2>
+        </div>
+        <div id="maxwell" class="unit-description">
+            <h2>Maxwell</h2>
+            
+        </div>
+        
+        <div id="ohmFields" class="unit-calculator" style="display:none;">
+            <label for="voltage">Voltaje (V): </label>
+            <input type="number" id="voltage"><br>
+            <label for="current">Corriente (I): </label>
+            <input type="number" id="current"><br>
+            <label for="resistance">Resistencia (R): </label>
+            <input type="number" id="resistance"><br>
+            <button onclick="calculateOhm()">Calcular</button>
+            <p id="ohmResult"></p>
+        </div>
+
+        <div id="faradayFields" class="unit-calculator" style="display:none;">
+            <label for="fluxChange">Cambio en el flujo magnético: </label>
+            <input type="number" id="fluxChange"><br>
+            <label for="timeChange">Cambio en el tiempo: </label>
+            <input type="number" id="timeChange"><br>
+            <button onclick="calculateFaraday()">Calcular</button>
+            <p id="faradayResult"></p>
+        </div>
+
+        <div id="kirchhoffCurrentFields" class="unit-calculator" style="display:none;">
+            <label for="currents">Corrientes (separadas por comas): </label>
+            <input type="text" id="currents"><br>
+            <button onclick="calculateKirchhoffCurrent()">Calcular</button>
+            <p id="kirchhoffCurrentResult"></p>
+        </div>
+
+        <div id="kirchhoffVoltageFields" class="unit-calculator" style="display:none;">
+            <label for="voltages">Voltajes (separados por comas): </label>
+            <input type="text" id="voltages"><br>
+            <button onclick="calculateKirchhoffVoltage()">Calcular</button>
+            <p id="kirchhoffVoltageResult"></p>
+        </div>
+
+        <div id="maxwellGaussElectricFields" class="unit-calculator" style="display:none;">
+            <label for="chargeDensity">Densidad de carga: </label>
+            <input type="number" id="chargeDensity"><br>
+            <label for="permittivity">Permisividad: </label>
+            <input type="number" id="permittivity"><br>
+            <button onclick="calculateMaxwellGaussElectric()">Calcular</button>
+            <p id="maxwellGaussElectricResult"></p>
+        </div>
+
+        <div id="maxwellFaradayFields" class="unit-calculator" style="display:none;">
+            <label for="magneticFluxChange">Cambio en el flujo magnético: </label>
+            <input type="number" id="magneticFluxChange"><br>
+            <label for="timeChangeFaraday">Cambio en el tiempo: </label>
+            <input type="number" id="timeChangeFaraday"><br>
+            <button onclick="calculateMaxwellFaraday()">Calcular</button>
+            <p id="maxwellFaradayResult"></p>
+        </div>
+
+        <div id="maxwellAmpereFields" class="unit-calculator" style="display:none;">
+            <label for="currentDensity">Densidad de corriente: </label>
+            <input type="number" id="currentDensity"><br>
+            <label for="permittivityAmpere">Permisividad: </label>
+            <input type="number" id="permittivityAmpere"><br>
+            <label for="electricFieldChange">Cambio en el campo eléctrico: </label>
+            <input type="number" id="electricFieldChange"><br>
+            <label for="timeChangeAmpere">Cambio en el tiempo: </label>
+            <input type="number" id="timeChangeAmpere"><br>
+            <button onclick="calculateMaxwellAmpere()">Calcular</button>
+            <p id="maxwellAmpereResult"></p>
+        </div>
+    </div>
+    <script>
+        function displayFields() {
+            const unit = document.getElementById('units').value;
+            document.querySelectorAll('.unit-description').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.unit-calculator').forEach(el => el.style.display = 'none');
+            if (unit) {
+                document.getElementById(unit).style.display = 'block';
+                if (unit === 'ohm') {
+                    document.getElementById('ohmFields').style.display = 'block';
+                } else if (unit === 'faraday') {
+                    document.getElementById('faradayFields').style.display = 'block';
+                } else if (unit === 'kirchhoff') {
+                    document.getElementById('kirchhoffCurrentFields').style.display = 'block';
+                    document.getElementById('kirchhoffVoltageFields').style.display = 'block';
+                } else if (unit === 'maxwell') {
+                    document.getElementById('maxwellGaussElectricFields').style.display = 'block';
+                    document.getElementById('maxwellFaradayFields').style.display = 'block';
+                    document.getElementById('maxwellAmpereFields').style.display = 'block';
+                }
+            }
+        }
+
+        function calculateOhm() {
+            const voltage = parseFloat(document.getElementById('voltage').value);
+            const current = parseFloat(document.getElementById('current').value);
+            const resistance = parseFloat(document.getElementById('resistance').value);
+            let result = '';
+            if (!isNaN(voltage) && !isNaN(current)) {
+                result = `Resistencia (R) = ${voltage / current} ohmios`;
+            } else if (!isNaN(voltage) && !isNaN(resistance)) {
+                result = `Corriente (I) = ${voltage / resistance} amperios`;
+            } else if (!isNaN(current) && !isNaN(resistance)) {
+                result = `Voltaje (V) = ${current * resistance} voltios`;
+            } else {
+                result = 'Por favor, ingrese al menos dos valores.';
+            }
+            document.getElementById('ohmResult').innerText = result;
+        }
+
+        function calculateFaraday() {
+            const fluxChange = parseFloat(document.getElementById('fluxChange').value);
+            const timeChange = parseFloat(document.getElementById('timeChange').value);
+            if (!isNaN(fluxChange) && !isNaN(timeChange)) {
+                const emf = -fluxChange / timeChange;
+                document.getElementById('faradayResult').innerText = `Fuerza electromotriz (emf) = ${emf} V`;
+            } else {
+                document.getElementById('faradayResult').innerText = 'Por favor, ingrese ambos valores.';
+            }
+        }
+
+        function calculateKirchhoffCurrent() {
+            const currents = document.getElementById('currents').value.split(',').map(Number);
+            if (currents.every(c => !isNaN(c))) {
+                const sum = currents.reduce((acc, curr) => acc + curr, 0);
+                document.getElementById('kirchhoffCurrentResult').innerText = `Suma de corrientes = ${sum} A`;
+            } else {
+                document.getElementById('kirchhoffCurrentResult').innerText = 'Por favor, ingrese valores válidos.';
+            }
+        }
+
+        function calculateKirchhoffVoltage() {
+            const voltages = document.getElementById('voltages').value.split(',').map(Number);
+            if (voltages.every(v => !isNaN(v))) {
+                const sum = voltages.reduce((acc, curr) => acc + curr, 0);
+                document.getElementById('kirchhoffVoltageResult').innerText = `Suma de voltajes = ${sum} V`;
+            } else {
+                document.getElementById('kirchhoffVoltageResult').innerText = 'Por favor, ingrese valores válidos.';
+            }
+        }
+
+        function calculateMaxwellGaussElectric() {
+            const chargeDensity = parseFloat(document.getElementById('chargeDensity').value);
+            const permittivity = parseFloat(document.getElementById('permittivity').value);
+            if (!isNaN(chargeDensity) && !isNaN(permittivity)) {
+                const electricFlux = chargeDensity / permittivity;
+                document.getElementById('maxwellGaussElectricResult').innerText = `Flujo eléctrico (Φ_E) = ${electricFlux}`;
+            } else {
+                document.getElementById('maxwellGaussElectricResult').innerText = 'Por favor, ingrese valores válidos.';
+            }
+        }
+
+        function calculateMaxwellFaraday() {
+            const magneticFluxChange = parseFloat(document.getElementById('magneticFluxChange').value);
+            const timeChange = parseFloat(document.getElementById('timeChangeFaraday').value);
+            if (!isNaN(magneticFluxChange) && !isNaN(timeChange)) {
+                const inducedEmf = -magneticFluxChange / timeChange;
+                document.getElementById('maxwellFaradayResult').innerText = `Fuerza electromotriz inducida (emf) = ${inducedEmf} V`;
+            } else {
+                document.getElementById('maxwellFaradayResult').innerText = 'Por favor, ingrese valores válidos.';
+            }
+        }
+
+        function calculateMaxwellAmpere() {
+            const currentDensity = parseFloat(document.getElementById('currentDensity').value);
+            const permittivity = parseFloat(document.getElementById('permittivityAmpere').value);
+            const electricFieldChange = parseFloat(document.getElementById('electricFieldChange').value);
+            const timeChange = parseFloat(document.getElementById('timeChangeAmpere').value);
+            if (!isNaN(currentDensity) && !isNaN(permittivity) && !isNaN(electricFieldChange) && !isNaN(timeChange)) {
+                const magneticField = (currentDensity + permittivity * (electricFieldChange / timeChange));
+                document.getElementById('maxwellAmpereResult').innerText = `Campo magnético (B) = ${magneticField}`;
+            } else {
+                document.getElementById('maxwellAmpereResult').innerText = 'Por favor, ingrese valores válidos.';
+            }
+        }
+    </script>
+</body>
+</html>
